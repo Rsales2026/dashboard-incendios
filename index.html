@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Encuesta Incendios - Piedemonte</title>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/recharts@2.8.0/dist/Recharts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
             margin: 0;
@@ -123,16 +121,10 @@
             color: #1f2937;
             margin-bottom: 16px;
         }
-        .chart-placeholder {
-            width: 100%;
+        .chart-wrapper {
+            position: relative;
             height: 350px;
-            background: #e5e7eb;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #6b7280;
-            font-size: 14px;
+            width: 100%;
         }
         .findings-grid {
             display: grid;
@@ -179,23 +171,6 @@
         }
         .data-table tr:hover {
             background: #f9fafb;
-        }
-        .bar {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .bar-fill {
-            height: 24px;
-            background: linear-gradient(to right, #2563eb, #3b82f6);
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding-right: 8px;
-            color: white;
-            font-size: 12px;
-            font-weight: 600;
         }
         .hidden { display: none; }
     </style>
@@ -266,13 +241,9 @@
                     </div>
                     <div class="chart-container">
                         <div class="chart-title">Género</div>
-                        <table class="data-table">
-                            <thead><tr><th>Tipo</th><th>Cantidad</th><th>Porcentaje</th></tr></thead>
-                            <tbody>
-                                <tr><td>Femenino</td><td>87</td><td>60%</td></tr>
-                                <tr><td>Masculino</td><td>58</td><td>40%</td></tr>
-                            </tbody>
-                        </table>
+                        <div class="chart-wrapper">
+                            <canvas id="chartGenero"></canvas>
+                        </div>
                     </div>
                     <div class="chart-container">
                         <div class="chart-title">Nivel Educativo</div>
@@ -305,23 +276,15 @@
                     </div>
                     <div class="chart-container">
                         <div class="chart-title">¿Perciben Peligro?</div>
-                        <table class="data-table">
-                            <thead><tr><th>Respuesta</th><th>Cantidad</th><th>Porcentaje</th></tr></thead>
-                            <tbody>
-                                <tr><td>Sí, es peligroso</td><td>118</td><td>81%</td></tr>
-                                <tr><td>No, no es peligroso</td><td>27</td><td>19%</td></tr>
-                            </tbody>
-                        </table>
+                        <div class="chart-wrapper">
+                            <canvas id="chartPeligro"></canvas>
+                        </div>
                     </div>
                     <div class="chart-container">
                         <div class="chart-title">Afectados por Incendio (2023)</div>
-                        <table class="data-table">
-                            <thead><tr><th>Situación</th><th>Cantidad</th><th>Porcentaje</th></tr></thead>
-                            <tbody>
-                                <tr><td>Vivió incendio en 2023</td><td>56</td><td>39%</td></tr>
-                                <tr><td>No vivió incendio</td><td>89</td><td>61%</td></tr>
-                            </tbody>
-                        </table>
+                        <div class="chart-wrapper">
+                            <canvas id="chartAfectados"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -384,15 +347,9 @@
             <div id="prevencion" class="tab-content hidden">
                 <div class="chart-container">
                     <div class="chart-title">Prácticas Preventivas Realizadas</div>
-                    <table class="data-table">
-                        <thead><tr><th>Práctica</th><th>Cantidad</th><th>Porcentaje</th></tr></thead>
-                        <tbody>
-                            <tr><td>Cortafuegos</td><td>62</td><td>43%</td></tr>
-                            <tr><td>Limpieza de vegetación</td><td>98</td><td>68%</td></tr>
-                            <tr><td>Limpieza de baldíos</td><td>87</td><td>60%</td></tr>
-                            <tr><td>Otras prácticas</td><td>41</td><td>28%</td></tr>
-                        </tbody>
-                    </table>
+                    <div class="chart-wrapper" style="height: 300px;">
+                        <canvas id="chartPrevencion"></canvas>
+                    </div>
                 </div>
             </div>
 
@@ -464,6 +421,126 @@
     </div>
 
     <script>
+        // Gráfico Género (Pastel)
+        const chartGeneroCtx = document.getElementById('chartGenero');
+        if (chartGeneroCtx) {
+            new Chart(chartGeneroCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Femenino', 'Masculino'],
+                    datasets: [{
+                        data: [87, 58],
+                        backgroundColor: ['#FF6B6B', '#4ECDC4'],
+                        borderColor: ['#fff', '#fff'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { padding: 15, font: { size: 13 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico Percepción Peligro (Pastel)
+        const chartPeligroCtx = document.getElementById('chartPeligro');
+        if (chartPeligroCtx) {
+            new Chart(chartPeligroCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Sí, es peligroso', 'No, no es peligroso'],
+                    datasets: [{
+                        data: [118, 27],
+                        backgroundColor: ['#FF6B6B', '#4ECDC4'],
+                        borderColor: ['#fff', '#fff'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { padding: 15, font: { size: 13 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico Afectados 2023 (Pastel)
+        const chartAfectadosCtx = document.getElementById('chartAfectados');
+        if (chartAfectadosCtx) {
+            new Chart(chartAfectadosCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Vivió incendio', 'No vivió incendio'],
+                    datasets: [{
+                        data: [56, 89],
+                        backgroundColor: ['#45B7D1', '#98D8C8'],
+                        borderColor: ['#fff', '#fff'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { padding: 15, font: { size: 13 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico Prácticas Preventivas (Barras)
+        const chartPrevencionCtx = document.getElementById('chartPrevencion');
+        if (chartPrevencionCtx) {
+            new Chart(chartPrevencionCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Cortafuegos', 'Limpieza vegetación', 'Limpieza baldíos', 'Otras prácticas'],
+                    datasets: [{
+                        label: 'Cantidad de personas',
+                        data: [62, 98, 87, 41],
+                        backgroundColor: ['#2563eb', '#3b82f6', '#60a5fa', '#93c5fd'],
+                        borderRadius: 5,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    indexAxis: 'x',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: { padding: 15, font: { size: 13 } }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 120,
+                            ticks: { font: { size: 12 } }
+                        },
+                        x: {
+                            ticks: { font: { size: 12 } }
+                        }
+                    }
+                }
+            });
+        }
+
         function mostrarTab(tabId) {
             // Ocultar todas las tabs
             const tabs = document.querySelectorAll('.tab-content');
@@ -476,6 +553,16 @@
             const buttons = document.querySelectorAll('.tab-button');
             buttons.forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
+
+            // Redimensionar gráficos cuando se muestran
+            setTimeout(() => {
+                const chartElements = document.querySelectorAll('canvas');
+                chartElements.forEach(canvas => {
+                    if (canvas.chart) {
+                        canvas.chart.resize();
+                    }
+                });
+            }, 100);
         }
     </script>
 </body>
