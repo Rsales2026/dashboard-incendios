@@ -501,16 +501,16 @@
             });
         }
 
-        // Gráfico Prácticas Preventivas (Barras)
-        const chartPrevencionCtx = document.getElementById('chartPrevencion');
-        if (chartPrevencionCtx) {
-            new Chart(chartPrevencionCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Cortafuegos', 'Limpieza vegetación', 'Limpieza baldíos', 'Otras prácticas'],
-                    datasets: [{
-                        label: 'Cantidad de personas',
-                        data: [0, 0, 0, 0],
+// Gráfico Prácticas Preventivas (Barras)
+const chartPrevencionCtx = document.getElementById('chartPrevencion');
+if (chartPrevencionCtx) {
+    new Chart(chartPrevencionCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Cortafuegos', 'Limpieza vegetación', 'Limpieza baldíos', 'Otras prácticas'],
+            datasets: [{
+                label: 'Cantidad de personas',
+                data: [62, 98, 87, 41],
                         backgroundColor: ['#2563eb', '#3b82f6', '#60a5fa', '#93c5fd'],
                         borderRadius: 5,
                         borderSkipped: false
