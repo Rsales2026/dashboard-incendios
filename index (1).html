@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuesta Incendios Vertientes del Piedemonte, Luján de Cuyo 2026</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(to bottom right, #f0f9ff, #f0fdf4);
+            min-height: 100vh;
+            padding: 24px;
+        }
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+        .header {
+            margin-bottom: 32px;
+        }
+        .header h1 {
+            font-size: 36px;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+        .header h2 {
+            font-size: 20px;
+            color: #4b5563;
+            margin-bottom: 8px;
+        }
+        .header p {
+            color: #6b7280;
+            margin-top: 8px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .stat-card {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .stat-card-1 { border-left: 4px solid #FF6B6B; }
+        .stat-card-2 { border-left: 4px solid #4ECDC4; }
+        .stat-card-3 { border-left: 4px solid #45B7D1; }
+        .stat-card-4 { border-left: 4px solid #98D8C8; }
+        .stat-title {
+            color: #4b5563;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1f2937;
+            margin-top: 8px;
+        }
+        .stat-percent {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+        .content-box {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        .tab-button {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            background: #f3f4f6;
+            color: #374151;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .tab-button.active {
+            background: #2563eb;
+            color: white;
+        }
+        .tab-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 16px;
+        }
+        .chart-container {
+            background: #f9fafb;
+            padding: 16px;
+            border-radius: 8px;
+        }
+        .chart-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 16px;
+        }
+        .chart-wrapper {
+            position: relative;
+            height: 350px;
+            width: 100%;
+        }
+        .findings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        .finding-card {
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+        .finding-card-1 { background: #fee2e2; border-color: #ef4444; }
+        .finding-card-2 { background: #fed7aa; border-color: #f97316; }
+        .finding-card-3 { background: #fef3c7; border-color: #eab308; }
+        .finding-card-4 { background: #dcfce7; border-color: #22c55e; }
+        .finding-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+        .finding-text {
+            color: #374151;
+            font-size: 14px;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+        .data-table th, .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .data-table th {
+            background: #f3f4f6;
+            font-weight: 600;
+            color: #374151;
+        }
+        .data-table tr:hover {
+            background: #f9fafb;
+        }
+        .recommendations-box {
+            background: #f0f9ff;
+            border-left: 4px solid #2563eb;
+            padding: 24px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+        .recommendations-box h3 {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 16px;
+        }
+        .recommendations-box p {
+            color: #374151;
+            line-height: 1.8;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        .recommendation-item {
+            margin-bottom: 16px;
+            padding-left: 24px;
+            position: relative;
+        }
+        .recommendation-item::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            color: #22c55e;
+            font-size: 18px;
+        }
+        .contact-box {
+            background: #f3f4f6;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 16px;
+        }
+        .contact-box h4 {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+        .contact-box p {
+            color: #374151;
+            font-size: 14px;
+        }
+        .footer {
+            text-align: center;
+            color: #4b5563;
+            font-size: 14px;
+            margin-top: 32px;
+        }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+           <img src="portada.jpg" style="width: 100%; max-width: 1000px; border-radius: 8px; margin-bottom: 24px;">
+            <h1>📊 Principales datos derivados de la encuesta sobre 
+                percepción de incendios y comportamiento ambiental</h1>
+           <h2>Vertientes del Pedemonte, Luján de Cuyo, Mendoza (Argentina)</h2>
+<p style="color: #6b7280; margin-top: 8px; font-size: 14px; line-height: 1.6;">
+    Los datos que se presentan a continuación provienen de una encuesta realizada por integrantes del Instituto Multidisciplinario de Estudios Sociales Contemporáneos (IMESC-IDEHESI-CONICET-UNCuyo) en articulación con la Municipalidad de Luján de Cuyo. Los resultados brindan información sobre la percepción ambiental de habitantes de Vertientes del Piedemonte, Luján de Cuyo, así como sobre las prácticas que desarrollan los residentes para prevenir o mitigar incendios. La información recopilada permitirá caracterizar el riesgo en el área y será utilizada para la elaboración de informes destinados a stakeholders de la Municipalidad y otras instituciones, así como para trabajos académicos.
+</p>
+<p style="color: #4b5563; margin-top: 16px; font-size: 14px;"><strong>Análisis de 148 respuestas</strong></p>
+        </div>
+
+        <!-- Estadísticas clave -->
+        <div class="stats-grid">
+            <div class="stat-card stat-card-1">
+                <div class="stat-title">Total de Encuestados/as</div>
+                <div class="stat-value">148</div>
+                <div class="stat-percent">100% del total</div>
+            </div>
+            <div class="stat-card stat-card-2">
+                <div class="stat-title">Encuestados/as que identificaron zonas peligrosas ante incendios</div>
+                <div class="stat-value">126</div>
+                <div class="stat-percent">86.9% del total</div>
+            </div>
+            <div class="stat-card stat-card-3">
+                <div class="stat-title">Experiencia del Incendio 2023</div>
+                <div class="stat-value">121</div>
+                <div class="stat-percent">81.8% del total</div>
+            </div>
+            <div class="stat-card stat-card-4">
+                <div class="stat-title">Conocen rutas de evacuación</div>
+                <div class="stat-value">67</div>
+                <div class="stat-percent">45.3% del total</div>
+            </div>
+        </div>
+
+        <!-- Contenido principal -->
+        <div class="content-box">
+            <div class="button-group">
+                <button class="tab-button active" onclick="mostrarTab('demograficos')">👥 Datos Base</button>
+                <button class="tab-button" onclick="mostrarTab('incendios')">🔥 Percepción de incendios</button>
+                <button class="tab-button" onclick="mostrarTab('riesgos')">⚠️ Factores de riesgo</button>
+                <button class="tab-button" onclick="mostrarTab('danios')">💔 Percepción sobre posibles daños</button>
+                <button class="tab-button" onclick="mostrarTab('prevencion')">🛡️ Acciones realizadas para mitigar el riesgo</button>
+                <button class="tab-button" onclick="mostrarTab('acciones')">✅ Acciones realizadas durante el incendio de 2023</button>
+                <button class="tab-button" onclick="mostrarTab('evacuacion')">🚪 Rutas de evacuación</button>
+            </div>
+
+            <!-- Datos Base -->
+            <div id="demograficos" class="tab-content">
+                <div class="chart-grid">
+                    <div class="chart-container">
+                        <div class="chart-title">Distribución por edad</div>
+                        <table class="data-table">
+                            <thead><tr><th>Rango</th><th>Cantidad</th><th>Porcentaje</th></tr></thead>
+                            <tbody>
+                                <tr><td>18-30</td><td>5</td><td>3.4%</td></tr>
+                                <tr><td>31-60</td><td>108</td><td>72.9%</td></tr>
+                                <tr><td>Más de 60</td><td>34</td><td>23.0%</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">Género</div>
+                        <div class="chart-wrapper">
+                            <canvas id="chartGenero"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">Nivel educativo</div>
+                        <table class="data-table">
+                            <thead><tr><th>Nivel</th><th>Cantidad</th><th>Porcentaje</th></tr></thead>
+                            <tbody>
+                                <tr><td>Secundario</td><td>47</td><td>31.8%</td></tr>
+                                <tr><td>Universitario</td><td>64</td><td>43.2%</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Percepción Incendios -->
+            <div id="incendios" class="tab-content hidden">
+                <div class="chart-grid">
+                    <div class="chart-container" style="grid-column: 1/-1;">
+                        <div class="chart-title">Frecuencia de incendios percibida</div>
+                        <table class="data-table">
+                            <thead><tr><th>Frecuencia</th><th>Cantidad</th><th>Porcentaje</th></tr></thead>
+                            <tbody>
+                                <tr><td>Varias veces por año</td><td>54</td><td>36.5%</td></tr>
+                                <tr><td>Una vez por año</td><td>48</td><td>32.4%</td></tr>
+                                <tr><td>Cada 2 a 5 años</td><td>16</td><td>10.8%</td></tr>
+                                <tr><td>Con menor frecuencia</td><td>21</td><td>14.2%</td></tr>
+                                <tr><td>Nunca</td><td>2</td><td>1.4%</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-title">Zonas peligrosas identificadas</div>
+                        <table class="data-table">
+                            <thead><tr><th>Situación</th><th>Cantidad</th><th>Porcentaje</th></tr></thead>
+                            <tbody>
+                                <tr><td>Marcó zona peligrosa</td><td>126</td><td>85.1%</td></tr>
+                                <tr><td>No marcó zona</td><td>22</td><td>14.9%</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Factores de Riesgo -->
+            <div id="riesgos" class="tab-content hidden">
+                <div class="chart-container">
+                    <div class="chart-title">Factores de riesgo identificados</div>
+                    <table class="data-table">
+                        <thead><tr><th>Factor</th><th>Cantidad</th><th>Porcentaje</th></tr></thead>
+                        <tbody>
+                            <tr><td>Baldíos sin limpiar</td><td>120</td><td>81.1%</td></tr>
+                            <tr><td>Calles sin salida</td><td>78</td><td>52.7%</td></tr>
+                            <tr><td>Falta de agua</td><td>129</td><td>87.2%</td></tr>
+                            <tr><td>Acceso bomberos limitado</td><td>103</td><td>69.6%</td></tr>
+                            <tr><td>Problemas de transporte</td><td>78</td><td>52.7%</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Daños -->
+            <div id="danios" class="tab-content hidden">
+                <div class="chart-container">
+                    <div class="chart-title">Daños que pueden generarse por incendios</div>
+                    <table class="data-table">
+                        <thead><tr><th>Tipo de daño</th><th>Cantidad</th><th>Porcentaje</th></tr></thead>
+                        <tbody>
+                            <tr><td>Viviendas</td><td>134</td><td>90.5%</td></tr>
+                            <tr><td>Caminos</td><td>28</td><td>18.9%</td></tr>
+                            <tr><td>Vegetación</td><td>122</td><td>82.4%</td></tr>
+                            <tr><td>Fauna</td><td>111</td><td>75.0%</td></tr>
+                            <tr><td>Espacios turísticos</td><td>22</td><td>14.9%</td></tr>
+                            <tr><td>Belleza paisajística</td><td>63</td><td>42.6%</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Prevención -->
+            <div id="prevencion" class="tab-content hidden">
+                <div class="chart-container">
+                    <div class="chart-title">Prácticas preventivas realizadas</div>
+                    <div class="chart-wrapper" style="height: 300px;">
+                        <canvas id="chartPrevencion"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Acciones 2023 -->
+            <div id="acciones" class="tab-content hidden">
+                <div class="chart-container">
+                    <div class="chart-title">Acciones realizadas durante el incendio 2023</div>
+                    <div class="chart-wrapper" style="height: 300px;">
+                        <canvas id="chartAcciones"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rutas de Evacuación -->
+            <div id="evacuacion" class="tab-content hidden">
+                <div class="chart-container">
+                    <div class="chart-title">Conocimiento de rutas de evacuación</div>
+                    <div class="chart-wrapper" style="height: 300px;">
+                        <canvas id="chartRutas"></canvas>
+                    </div>
+                    <table class="data-table" style="margin-top: 20px;">
+                        <thead><tr><th>Conocimiento de rutas</th><th>Cantidad</th><th>Porcentaje</th></tr></thead>
+                        <tbody>
+                            <tr><td>Sí conoce</td><td>67</td><td>45.3%</td></tr>
+                            <tr><td>No conoce</td><td>74</td><td>50.0%</td></tr>
+                            <tr><td>Sin respuesta</td><td>7</td><td>4.7%</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hallazgos clave -->
+        <div class="content-box">
+            <h2 style="font-size: 20px; font-weight: bold; color: #1f2937; margin-bottom: 16px;">🔑 Hallazgos Clave</h2>
+            <div class="findings-grid">
+                <div class="finding-card finding-card-1">
+                    <div class="finding-title">Identificación de zonas peligrosas</div>
+                    <div class="finding-text">El 86.9% (126 personas) identificó y marcó zonas peligrosas de incendio en Vertientes del Pedemonte. La mayoría considera que están ubicadas cerca o dentro de los barrios.</div>
+                </div>
+                <div class="finding-card finding-card-2">
+                    <div class="finding-title">Principal factor de riesgo</div>
+                    <div class="finding-text">La falta de agua es identificada por el 87.2% como uno de los principales factores de riesgo, seguida por baldíos sin limpiar (81.1%).</div>
+                </div>
+                <div class="finding-card finding-card-3">
+                    <div class="finding-title">Participación comunitaria</div>
+                    <div class="finding-text">El 37.2% colaboró con vecinas/os durante el incendio del 2023 y el 38.5% siguió indicaciones de autoridades.</div>
+                </div>
+                <div class="finding-card finding-card-4">
+                    <div class="finding-title">Brecha en información</div>
+                    <div class="finding-text">Solo el 45.3% conoce rutas de evacuación, lo que indica la necesidad de mejorar la identificación de rutas de evacuación, comunicación, señalética y preparación comunitaria.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recomendaciones -->
+        <div class="recommendations-box">
+            <h3>🔑 REFLEXIONES PARA PENSAR EN ACCIONES CONCRETAS</h3>
+            
+            <p>La gestión del riesgo de incendios en Vertientes del Pedemonte, Luján de Cuyo, Mendoza, requiere un esfuerzo coordinado entre múltiples actores:</p>
+            
+            <div class="recommendation-item">
+                <strong>Participación comunitaria:</strong> es clave que las y los vecinos participen activamente en la identificación de riesgos, en el diseño de soluciones y en la implementación de acciones preventivas. Las comunidades locales poseen conocimiento invaluable sobre su territorio y sus vulnerabilidades.
+            </div>
+            
+            <div class="recommendation-item">
+                <strong>Presencia estatal:</strong> La articulación con instituciones municipales, provinciales y nacionales es esencial para garantizar políticas públicas, asignación de recursos, capacitación y coordinación para mitigar el riesgo de incendios. El Estado tiene el deber de respaldar las iniciativas comunitarias.
+            </div>
+            
+            <div class="recommendation-item">
+                <strong>Aporte de la academia:</strong> la investigación científica resulta clave para sustentar decisiones, evaluar la efectividad de las medidas implementadas y generar información basada en datos del territorio que oriente tanto la política pública como la acción comunitaria.
+            </div>
+            
+            <div class="recommendation-item">
+                <strong>Colaboración interinstitucional:</strong> la integración de organismos de investigación, defensa civil, Plan Provincual de Manejo del Fuego, bomberos y otras instituciones fortalece la respuesta ante eventos de fuego.
+            </div>
+            
+            <div style="border-top: 2px solid #2563eb; margin-top: 20px; padding-top: 20px;">
+                <h4 style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 12px;">📋 Plan de acción comunitario</h4>
+                <p>El equipo del Instituto Multidisciplinario de Estudios Sociales Contemporáneos (IMESC-IDEHESI-CONICET-UNCuyo), en colaboración con investigadores/as del Instituto Argentino de Investigaciones de las Zonas Áridas (IADIZA-CONICET-UNCuyo) e Instituto Argentino de Nivología, Glaciología y Ciencias Ambientales (IANIGLA-CONICET-UNCuyo), en articulación con la Municipalidad de Luján de Cuyo y especialistas en manejo del fuego, está trabajando en la elaboración de un Plan de Acción Comunitario ante el Fuego para Vertientes del Pedemonte.</p>
+                
+                <div class="contact-box">
+                    <h4>📧 ¿Tenés algún dato, sugerencia u observación para compartir?</h4>
+<p>Si conocés información relevante sobre incendios, zonas de riesgo u otro dato que creas importante, escribinos:</p>
+<p><strong>Romina G. Sales</strong></p>
+<p>rsales@conicet.gov.ar</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>Encuesta realizada en Vertientes del Pedemonte • Datos procesados y visualizados</div>
+<div style="margin-top: 8px;">148 respuestas recopiladas • Mayo-Junio 2026</div>
+<div style="margin-top: 8px;">Equipo de trabajo: Tec. Mario Javier Orbiscay, Ing. María Luisina Torre Azzaroni, Lic. Marcela Orbiscay, Lic. Eduardo Rubén Soria, Geogr. Luis Alejandro Verdugo y Geogr. Matías Ghilardi. Coordinación: Dra. Julieta Dalla Torre y Dra. Romina Sales.</div>
+<div style="margin-top: 8px; font-style: italic;">Estos datos son de acceso público, pero fueron relevados y procesados por el equipo IMESC-IDEHESI-CONICET-UNCuyo. Se solicita citar la fuente en caso de uso o difusión.</div>
+        </div>
+    </div>
+
+    <script>
+        // Gráfico Género (Pastel)
+        const chartGeneroCtx = document.getElementById('chartGenero');
+        if (chartGeneroCtx) {
+            new Chart(chartGeneroCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Femenino', 'Masculino'],
+                    datasets: [{
+                        data: [80, 67],
+                        backgroundColor: ['#FF6B6B', '#4ECDC4'],
+                        borderColor: ['#fff', '#fff'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { padding: 15, font: { size: 13 } }
+                        }
+                    }
+                }
+            });
+        }
+
+// Gráfico Prácticas Preventivas (Barras)
+const chartPrevencionCtx = document.getElementById('chartPrevencion');
+if (chartPrevencionCtx) {
+    new Chart(chartPrevencionCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Cortafuegos', 'Limpieza vegetación', 'Limpieza baldíos', 'Otras prácticas'],
+            datasets: [{
+                label: 'Cantidad de personas',
+                data: [62, 98, 87, 41],
+                        backgroundColor: ['#2563eb', '#3b82f6', '#60a5fa', '#93c5fd'],
+                        borderRadius: 5,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    indexAxis: 'x',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: { padding: 15, font: { size: 13 } }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 120,
+                            ticks: { font: { size: 12 } }
+                        },
+                        x: {
+                            ticks: { font: { size: 12 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico Acciones (Barras)
+        const chartAccionesCtx = document.getElementById('chartAcciones');
+        if (chartAccionesCtx) {
+            new Chart(chartAccionesCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Sin saber qué hacer', 'Se informó de riesgos', 'Colaboró con vecinos', 'Se auto-evacuó', 'Llamó a bomberos', 'Siguió autoridades'],
+                    datasets: [{
+                        label: 'Cantidad de personas',
+                        data: [19, 24, 55, 42, 28, 57],
+                        backgroundColor: ['#ef4444', '#f97316', '#eab308', '#3b82f6', '#06b6d4', '#22c55e'],
+                        borderRadius: 5,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    indexAxis: 'x',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: { padding: 15, font: { size: 13 } }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 65,
+                            ticks: { font: { size: 12 } }
+                        },
+                        x: {
+                            ticks: { font: { size: 11 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico Rutas de Evacuación
+        const chartRutasCtx = document.getElementById('chartRutas');
+        if (chartRutasCtx) {
+            new Chart(chartRutasCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Sí conoce', 'No conoce', 'Sin respuesta'],
+                    datasets: [{
+                        data: [67, 74, 7],
+                        backgroundColor: ['#22c55e', '#ef4444', '#d1d5db'],
+                        borderColor: ['#fff', '#fff', '#fff'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { padding: 15, font: { size: 13 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        function mostrarTab(tabId) {
+            // Ocultar todas las tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.add('hidden'));
+            
+            // Mostrar la tab seleccionada
+            document.getElementById(tabId).classList.remove('hidden');
+            
+            // Actualizar botones
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Redimensionar gráficos cuando se muestran
+            setTimeout(() => {
+                const chartElements = document.querySelectorAll('canvas');
+                chartElements.forEach(canvas => {
+                    if (canvas.chart) {
+                        canvas.chart.resize();
+                    }
+                });
+            }, 100);
+        }
+    </script>
+</body>
+</html>
